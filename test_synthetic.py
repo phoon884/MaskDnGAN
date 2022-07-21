@@ -146,7 +146,6 @@ if __name__ == '__main__':
 
     data_dir = args.input_dir
 
-    examples = os.listdir(data_dir+"iso1600")
 
     ckpt = args.ckpt
     output_dir = args.output_dir+ "/"
