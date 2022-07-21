@@ -147,7 +147,6 @@ if __name__ == '__main__':
     data_dir = args.input_dir
 
 
-    ckpt = args.ckpt
     output_dir = args.output_dir+ "/"
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
