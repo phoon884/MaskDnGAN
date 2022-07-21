@@ -33,7 +33,7 @@ def forward(input):
 
     return out_raw
 
-def denoise_syn(data_dir, output_dir, example):
+def denoise_syn(data_dir, output_dir):
     # Denoising function for synthetic videos
 
     allImageNames = os.listdir(data_dir)
@@ -80,52 +80,52 @@ def denoise_syn(data_dir, output_dir, example):
             output = output.cpu().detach().permute(0, 2, 3, 1)
             output = depack_gbrg_raw(output)[36:-36]
 
-            if args.raw_psnr:
-                ### RAW PSNR
-                test_gt = cv2.imread(args.input_dir + '/gt_raw/{}/{}'.format(example, imagesNames[int(numOfFrames/2)]),-1).astype(np.float32)[36:-36, :]
-                test_gt = (test_gt-240)/(2**12-1-240)
+            # if args.raw_psnr:
+            #     ### RAW PSNR
+            #     test_gt = cv2.imread(args.input_dir + '/gt_raw/{}/{}'.format(example, imagesNames[int(numOfFrames/2)]),-1).astype(np.float32)[36:-36, :]
+            #     test_gt = (test_gt-240)/(2**12-1-240)
 
-                test_raw_psnr = compare_psnr(test_gt, output, data_range=1.0)
-                test_raw_ssim = compute_ssim_for_packed_raw(test_gt, output)
-                context = 'scene {} frame{} test raw psnr : {}, test raw ssim : {} '.format(example, imagesNames[int(numOfFrames/2)].split('.')[0], test_raw_psnr, test_raw_ssim) + '\n'
-                f1.write(context)
-                frame_avg_raw_psnr += test_raw_psnr
-                frame_avg_raw_ssim += test_raw_ssim
+            #     test_raw_psnr = compare_psnr(test_gt, output, data_range=1.0)
+            #     test_raw_ssim = compute_ssim_for_packed_raw(test_gt, output)
+            #     context = 'scene {} frame{} test raw psnr : {}, test raw ssim : {} '.format(example, imagesNames[int(numOfFrames/2)].split('.')[0], test_raw_psnr, test_raw_ssim) + '\n'
+            #     f1.write(context)
+            #     frame_avg_raw_psnr += test_raw_psnr
+            #     frame_avg_raw_ssim += test_raw_ssim
 
             output = output*(2**12-1-240)+240
             denoised_raw_frame = preprocess(np.expand_dims(pack_gbrg_raw(output),axis=0))
             denoised_srgb_frame = postprocess(isp(denoised_raw_frame))[0]
 
-            if args.rgb_psnr:
-                ### sRGB PSNR
-                gt_srgb_frame = cv2.imread(args.input_dir + '/gt/{}/{}'.format(example, imagesNames[int(numOfFrames/2)].split('.')[0]+'.png'), 1)[36:-36].astype(np.float32)/255
+            # if args.rgb_psnr:
+            #     ### sRGB PSNR
+            #     gt_srgb_frame = cv2.imread(args.input_dir + '/gt/{}/{}'.format(example, imagesNames[int(numOfFrames/2)].split('.')[0]+'.png'), 1)[36:-36].astype(np.float32)/255
 
-                test_srgb_psnr = compare_psnr(gt_srgb_frame, denoised_srgb_frame, data_range=1.0)
-                test_srgb_ssim = compare_ssim(gt_srgb_frame, denoised_srgb_frame, data_range=1.0, multichannel=True)
-                print('scene {} frame{} test srgb psnr : {}, test srgb ssim : {} '.format(example, imagesNames[int(numOfFrames/2)].split('.')[0], test_srgb_psnr, test_srgb_ssim))
-                context = 'scene {} frame{} test srgb psnr : {}, test srgb ssim : {} '.format(example, imagesNames[int(numOfFrames/2)].split('.')[0], test_srgb_psnr, test_srgb_ssim) + '\n'
-                f2.write(context)
-                frame_avg_srgb_psnr += test_srgb_psnr
-                frame_avg_srgb_ssim += test_srgb_ssim
+            #     # test_srgb_psnr = compare_psnr(gt_srgb_frame, denoised_srgb_frame, data_range=1.0)
+            #     # test_srgb_ssim = compare_ssim(gt_srgb_frame, denoised_srgb_frame, data_range=1.0, multichannel=True)
+            #     print('scene {} frame{} test srgb psnr : {}, test srgb ssim : {} '.format(example, imagesNames[int(numOfFrames/2)].split('.')[0], test_srgb_psnr, test_srgb_ssim))
+            #     context = 'scene {} frame{} test srgb psnr : {}, test srgb ssim : {} '.format(example, imagesNames[int(numOfFrames/2)].split('.')[0], test_srgb_psnr, test_srgb_ssim) + '\n'
+            #     f2.write(context)
+            #     frame_avg_srgb_psnr += test_srgb_psnr
+            #     frame_avg_srgb_ssim += test_srgb_ssim
 
             # Write RGB denoised frame
             denoised_srgb_frame = np.uint8(denoised_srgb_frame*255)
             cv2.imwrite(os.path.join(output_dir, imagesNames[int(numOfFrames/2)].split('.')[0] + '.png'), denoised_srgb_frame)
             counter += 1
     
-    ### Save PSNRs to file.
-    if args.raw_psnr:
-        frame_avg_raw_psnr = frame_avg_raw_psnr/counter
-        frame_avg_raw_ssim = frame_avg_raw_ssim/counter
-        context = 'frame average raw psnr:{},frame average raw ssim:{} count: {}'.format(frame_avg_raw_psnr,frame_avg_raw_ssim, counter) + '\n'
-        f1.write(context)
-        print(context[:-1])
-    if args.rgb_psnr:
-        frame_avg_srgb_psnr = frame_avg_srgb_psnr/counter
-        frame_avg_srgb_ssim = frame_avg_srgb_ssim/counter
-        context = 'frame average srgb psnr:{},frame average srgb ssim:{} count: {}'.format(frame_avg_srgb_psnr,frame_avg_srgb_ssim, counter) + '\n'
-        f2.write(context)
-        print(context[:-1])
+    # ### Save PSNRs to file.
+    # if args.raw_psnr:
+    #     frame_avg_raw_psnr = frame_avg_raw_psnr/counter
+    #     frame_avg_raw_ssim = frame_avg_raw_ssim/counter
+    #     context = 'frame average raw psnr:{},frame average raw ssim:{} count: {}'.format(frame_avg_raw_psnr,frame_avg_raw_ssim, counter) + '\n'
+    #     f1.write(context)
+    #     print(context[:-1])
+    # if args.rgb_psnr:
+    #     frame_avg_srgb_psnr = frame_avg_srgb_psnr/counter
+    #     frame_avg_srgb_ssim = frame_avg_srgb_ssim/counter
+    #     context = 'frame average srgb psnr:{},frame average srgb ssim:{} count: {}'.format(frame_avg_srgb_psnr,frame_avg_srgb_ssim, counter) + '\n'
+    #     f2.write(context)
+    #     print(context[:-1])
 
     return frame_avg_raw_psnr, frame_avg_raw_ssim, frame_avg_srgb_psnr, frame_avg_srgb_ssim
 
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     examples = os.listdir(data_dir+"iso1600")
 
     ckpt = args.ckpt
-    output_dir = args.output_dir + ckpt + "/"
+    output_dir = args.output_dir+ "/"
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     denoiser = denoising_raw.DenoiseNet(inp_chans=140).eval()
@@ -176,47 +176,43 @@ if __name__ == '__main__':
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
-    for iso in iso_list:
-        context = 'ISO{}'.format(iso) + '\n'
-        if args.raw_psnr:
-            f1 = open(args.output_dir+'{}_model_test_psnr_and_ssim_on_iso{}_raw.txt'.format(args.ckpt, iso), 'w')
-            f1.write(context)
-            scene_avg_raw_psnr = 0
-            scene_avg_raw_ssim = 0
-        if args.rgb_psnr:
-            f2 = open(args.output_dir+'{}_model_test_psnr_and_ssim_on_iso{}_sRGB.txt'.format(args.ckpt, iso), 'w')
-            f2.write(context)
-            scene_avg_srgb_psnr = 0
-            scene_avg_srgb_ssim = 0
+    # for iso in iso_list:
+    #     context = 'ISO{}'.format(iso) + '\n'
+    #     if args.raw_psnr:
+    #         f1 = open(args.output_dir+'{}_model_test_psnr_and_ssim_on_iso{}_raw.txt'.format(args.ckpt, iso), 'w')
+    #         f1.write(context)
+    #         scene_avg_raw_psnr = 0
+    #         scene_avg_raw_ssim = 0
+    #     if args.rgb_psnr:
+    #         f2 = open(args.output_dir+'{}_model_test_psnr_and_ssim_on_iso{}_sRGB.txt'.format(args.ckpt, iso), 'w')
+    #         f2.write(context)
+    #         scene_avg_srgb_psnr = 0
+    #         scene_avg_srgb_ssim = 0
 
 
-        for example in examples:
-            context = 'scene{}'.format(example) + '\n'
-
-            frame_avg_raw_psnr, frame_avg_raw_ssim, frame_avg_srgb_psnr, frame_avg_srgb_ssim = \
-                denoise_syn(os.path.join(data_dir, 'iso' + iso, example), os.path.join(output_dir, 'iso' + iso, example), example)
+    denoise_syn(data_dir,output_dir)
             
             
-            if args.raw_psnr:
-                f1.write(context)
-                scene_avg_raw_psnr += frame_avg_raw_psnr
-                scene_avg_raw_ssim += frame_avg_raw_ssim
-            if args.rgb_psnr:
-                f2.write(context)
-                scene_avg_srgb_psnr += frame_avg_srgb_psnr
-                scene_avg_srgb_ssim += frame_avg_srgb_ssim
+        #     if args.raw_psnr:
+        #         f1.write(context)
+        #         scene_avg_raw_psnr += frame_avg_raw_psnr
+        #         scene_avg_raw_ssim += frame_avg_raw_ssim
+        #     if args.rgb_psnr:
+        #         f2.write(context)
+        #         scene_avg_srgb_psnr += frame_avg_srgb_psnr
+        #         scene_avg_srgb_ssim += frame_avg_srgb_ssim
             
         
-        num = len(examples)
-        if args.raw_psnr:
-            scene_avg_raw_psnr = scene_avg_raw_psnr/num
-            scene_avg_raw_ssim = scene_avg_raw_ssim/num
-            context = 'scene average raw psnr:{:.4},scene frame average raw ssim:{:.3} #scenes: {}'.format(scene_avg_raw_psnr,scene_avg_raw_ssim, num) + '\n'
-            f1.write(context)
-            print(context[:-1])
-        if args.rgb_psnr:
-            scene_avg_srgb_psnr = scene_avg_srgb_psnr/num
-            scene_avg_srgb_ssim = scene_avg_srgb_ssim/num
-            context = 'scene average srgb psnr:{:.4},scene frame average srgb ssim:{:.3} #scenes: {}'.format(scene_avg_srgb_psnr,scene_avg_srgb_ssim, num) + '\n'
-            f2.write(context)
-            print(context[:-1])
+        # num = len(examples)
+        # if args.raw_psnr:
+        #     scene_avg_raw_psnr = scene_avg_raw_psnr/num
+        #     scene_avg_raw_ssim = scene_avg_raw_ssim/num
+        #     context = 'scene average raw psnr:{:.4},scene frame average raw ssim:{:.3} #scenes: {}'.format(scene_avg_raw_psnr,scene_avg_raw_ssim, num) + '\n'
+        #     f1.write(context)
+        #     print(context[:-1])
+        # if args.rgb_psnr:
+        #     scene_avg_srgb_psnr = scene_avg_srgb_psnr/num
+        #     scene_avg_srgb_ssim = scene_avg_srgb_ssim/num
+        #     context = 'scene average srgb psnr:{:.4},scene frame average srgb ssim:{:.3} #scenes: {}'.format(scene_avg_srgb_psnr,scene_avg_srgb_ssim, num) + '\n'
+        #     f2.write(context)
+        #     print(context[:-1])
