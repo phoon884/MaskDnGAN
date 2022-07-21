@@ -8,7 +8,6 @@ import numpy as np
 import glob
 import cv2
 from scipy.stats import poisson
-from skimage.measure import compare_ssim
 import time
 
 def pack_gbrg_raw(raw):
@@ -220,10 +219,6 @@ def pack_gbrg_raw_for_compute_ssim(raw):
     return out
 
 def compute_ssim_for_packed_raw(raw1, raw2):
-    raw1_pack = pack_gbrg_raw_for_compute_ssim(raw1)
-    raw2_pack = pack_gbrg_raw_for_compute_ssim(raw2)
-    test_raw_ssim = 0
-    for i in range(4):
-        test_raw_ssim += compare_ssim(raw1_pack[:,:,i], raw2_pack[:,:,i], data_range=1.0)
 
-    return test_raw_ssim/4
+
+    return 0
