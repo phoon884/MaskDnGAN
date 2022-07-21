@@ -8,7 +8,7 @@ import numpy as np
 import glob
 import cv2
 from scipy.stats import poisson
-from skimage.measure import compare_psnr,compare_ssim
+from skimage.measure import compare_ssim
 import time
 
 def pack_gbrg_raw(raw):
