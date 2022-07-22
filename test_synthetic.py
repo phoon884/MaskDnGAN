@@ -64,7 +64,10 @@ def denoise_syn(data_dir, output_dir):
                 image_raw = Image.open(os.path.join(data_dir, imageName))
                 image_raw = pack_gbrg_raw(np.random.rand(1920,1952))#np.array(image_raw)
                 print(image_raw.shape)
-                image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).cuda().unsqueeze(0)
+                if torch.cuda.is_available() == False:
+                    image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).unsqueeze(0)
+                else:
+                    image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).cuda().unsqueeze(0)
                 images.append(image_raw)
 
             temp = []
