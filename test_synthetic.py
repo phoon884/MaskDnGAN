@@ -171,7 +171,10 @@ if __name__ == '__main__':
 
     for param in flowComp.parameters():
         param.requires_grad = False
-    isp = torch.load('isp/ISP_CNN.pth').to(device)
+    if torch.cuda.is_available() == False:
+        isp = torch.load('isp/ISP_CNN.pth', map_location=torch.device('cpu')).to(device)
+    else:
+        isp = torch.load('isp/ISP_CNN.pth').to(device)
     for k,v in isp.named_parameters():
         v.requires_grad=False
 
