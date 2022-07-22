@@ -157,12 +157,18 @@ if __name__ == '__main__':
         param.requires_grad = False
     if torch.cuda.is_available() == False:
         dict1 = torch.load("model/" + args.model + ".ckpt", map_location=torch.device('cpu'))
+    else:
+        dict1 = torch.load("model/" + args.model + ".ckpt", map_location=torch.device('cpu'))
     denoiser.load_state_dict(dict1['state_dict'])
 
     flowComp = RAFT(args)
     flowComp = flowComp.to(device).eval()
     flowComp.to(device)
-    flowComp.load_state_dict(torch.load('core/407000_raft.pth'), strict=False)
+    if torch.cuda.is_available() == False:
+        flowComp.load_state_dict(torch.load('core/407000_raft.pth'), strict=False , map_location=torch.device('cpu'))
+    else:
+        flowComp.load_state_dict(torch.load('core/407000_raft.pth'), strict=False)
+
     for param in flowComp.parameters():
         param.requires_grad = False
     isp = torch.load('isp/ISP_CNN.pth').to(device)
