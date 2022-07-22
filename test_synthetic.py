@@ -165,7 +165,7 @@ if __name__ == '__main__':
     flowComp = flowComp.to(device).eval()
     flowComp.to(device)
     if torch.cuda.is_available() == False:
-        flowComp.load_state_dict(torch.load('core/407000_raft.pth'), strict=False , map_location=torch.device('cpu'))
+        flowComp.load_state_dict(torch.load('core/407000_raft.pth',map_location=torch.device('cpu')), strict=False )
     else:
         flowComp.load_state_dict(torch.load('core/407000_raft.pth'), strict=False)
 
