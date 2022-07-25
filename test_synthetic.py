@@ -46,8 +46,8 @@ def denoise_syn(data_dir, output_dir):
     frame_avg_srgb_psnr = 0
     frame_avg_srgb_ssim = 0
     
-    # if not os.path.isdir(output_dir):
-    #     os.makedirs(output_dir)
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
 
     # List to store previous overlapping denoised frames
     prev = [None]
@@ -184,8 +184,8 @@ if __name__ == '__main__':
     backWarp = dataloader.backWarp((1920, 1152), device)
     backWarp = backWarp.to(device)    
     
-    # if not os.path.isdir(output_dir):
-    #     os.makedirs(output_dir)
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
 
     # for iso in iso_list:
     #     context = 'ISO{}'.format(iso) + '\n'
