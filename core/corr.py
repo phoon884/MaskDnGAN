@@ -34,6 +34,7 @@ class CorrBlock:
 
             centroid_lvl = coords.reshape(batch*h1*w1, 1, 1, 2) / 2**i
             delta_lvl = delta.view(1, 2*r+1, 2*r+1, 2)
+            print(f"delta level shape: {delta_lvl.shape}")
             coords_lvl = centroid_lvl + delta_lvl
 
             corr = bilinear_sampler(corr, coords_lvl)
