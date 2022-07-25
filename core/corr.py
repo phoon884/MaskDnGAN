@@ -13,6 +13,7 @@ class CorrBlock:
         corr = CorrBlock.corr(fmap1, fmap2)
 
         batch, h1, w1, dim, h2, w2 = corr.shape
+        print(f"print line 16:{corr.shape}")
         corr = corr.reshape(batch*h1*w1, dim, h2, w2)
         
         self.corr_pyramid.append(corr)
@@ -31,7 +32,7 @@ class CorrBlock:
             dx = torch.linspace(-r, r, 2*r+1)
             dy = torch.linspace(-r, r, 2*r+1)
             delta = torch.stack(torch.meshgrid(dy, dx), axis=-1).to(coords.device)
-
+            print(f"print line 34:{batch*h1*w1}")
             centroid_lvl = coords.reshape(batch*h1*w1, 1, 1, 2) / 2**i
             delta_lvl = delta.view(1, 2*r+1, 2*r+1, 2)
             coords_lvl = centroid_lvl + delta_lvl
