@@ -63,6 +63,7 @@ def denoise_syn(data_dir, output_dir):
                 # Loads the noisy image.
                 image_raw = Image.open(os.path.join(data_dir, imageName))
                 image_raw = pack_gbrg_raw(np.random.rand(576*2,960*2))#np.array(image_raw)
+                image_raw = np.random.rand(3840, 2160, 4).astype(np.float32)
                 print(image_raw.shape)
                 if torch.cuda.is_available() == False:
                     image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).unsqueeze(0)
