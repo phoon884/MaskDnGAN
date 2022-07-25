@@ -66,7 +66,7 @@ def denoise_syn(data_dir, output_dir):
                 print(f"test1:{test.shape}")
                 image_raw = pack_gbrg_raw(test)#np.array(image_ra
                 print(f"test2:{image_raw.shape}")
-                image_raw = np.random.rand(1920//2, 1080//2, 4).astype(np.float32)
+                image_raw = np.random.rand(1920, 1080,4).astype(np.float32)
                 print(image_raw.shape)
                 if torch.cuda.is_available() == False:
                     image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).unsqueeze(0)
