@@ -111,7 +111,7 @@ class RAFT(nn.Module):
             fmap1, fmap2 = self.fnet([image1, image2])        
         
         fmap1 = fmap1.float()
-        print(f"fmap:{fmap1}")
+        print(f"fmap:{fmap1.shape}")
         fmap2 = fmap2.float()
         corr_fn = CorrBlock(fmap1, fmap2, radius=self.args.corr_radius)
 
