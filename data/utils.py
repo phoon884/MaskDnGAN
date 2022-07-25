@@ -88,7 +88,8 @@ def reduce_mean_with_weight(im1, im2, noisy_level_data):
 def preprocess(raw):
     input_full = raw.transpose((0, 3, 1, 2))
     input_full = torch.from_numpy(input_full)
-    input_full = input_full.cuda()
+    if torch.cuda.is_available() == True:
+        input_full = input_full.cuda()
     return input_full
 
 def postprocess(output):

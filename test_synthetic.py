@@ -18,7 +18,7 @@ iso_list = ['25600', '12800', '6400', '3200', '1600']
 def forward(input):
     # Denoising function
     input_raw_left, input_raw_centr, input_raw_right = input
-
+    print(input_raw_centr.shape)
     with torch.no_grad():
         # Calculate optical flows - RAFT
         flow_left, context_centr = flowComp(input_raw_centr, input_raw_left, 32)
@@ -46,8 +46,8 @@ def denoise_syn(data_dir, output_dir):
     frame_avg_srgb_psnr = 0
     frame_avg_srgb_ssim = 0
     
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
+    # if not os.path.isdir(output_dir):
+    #     os.makedirs(output_dir)
 
     # List to store previous overlapping denoised frames
     prev = [None]
@@ -62,7 +62,7 @@ def denoise_syn(data_dir, output_dir):
             for imageName in imagesNames:
                 # Loads the noisy image.
                 image_raw = Image.open(os.path.join(data_dir, imageName))
-                image_raw = pack_gbrg_raw(np.random.rand(1920,1952))#np.array(image_raw)
+                image_raw = pack_gbrg_raw(np.random.rand(576*2,960*2))#np.array(image_raw)
                 print(image_raw.shape)
                 if torch.cuda.is_available() == False:
                     image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).unsqueeze(0)
@@ -184,8 +184,8 @@ if __name__ == '__main__':
     backWarp = dataloader.backWarp((1920, 1152), device)
     backWarp = backWarp.to(device)    
     
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
+    # if not os.path.isdir(output_dir):
+    #     os.makedirs(output_dir)
 
     # for iso in iso_list:
     #     context = 'ISO{}'.format(iso) + '\n'
