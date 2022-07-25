@@ -53,9 +53,9 @@ def forward_interpolate(flow):
 
 def bilinear_sampler(img, coords, mode='bilinear', mask=False):
     """ Wrapper for grid_sample, uses pixel coordinates """
+    print(img.shape, coords.shape)
     H, W = img.shape[-2:]
     xgrid, ygrid = coords.split([1,1], dim=-1)
-    print(img.shape, xgrid.shape, ygrid.shape)
     xgrid = 2*xgrid/(W-1) - 1
     ygrid = 2*ygrid/(H-1) - 1
 
