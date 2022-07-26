@@ -106,10 +106,9 @@ def denoise_syn(data_dir, output_dir):
             #     frame_avg_raw_psnr += test_raw_psnr
             #     frame_avg_raw_ssim += test_raw_ssim
 
-            output = output #*(2**12-1-240)+240
+            output = output*(2**12-1-240)+240
             denoised_raw_frame = preprocess(np.expand_dims(pack_gbrg_raw(output),axis=0))
             denoised_srgb_frame = postprocess(isp(denoised_raw_frame))[0]
-
             # if args.rgb_psnr:
             #     ### sRGB PSNR
             #     gt_srgb_frame = cv2.imread(args.input_dir + '/gt/{}/{}'.format(example, imagesNames[int(numOfFrames/2)].split('.')[0]+'.png'), 1)[36:-36].astype(np.float32)/255
@@ -123,7 +122,7 @@ def denoise_syn(data_dir, output_dir):
             #     frame_avg_srgb_ssim += test_srgb_ssim
 
             # Write RGB denoised frame
-            denoised_srgb_frame = np.uint8(denoised_srgb_frame*255)
+            denoised_srgb_frame = np.uint8(denoised_srgb_frame)#*255
             cv2.imwrite(os.path.join(output_dir, imagesNames[int(numOfFrames/2)].split('.')[0] + '.png'), denoised_srgb_frame)
             counter += 1
     
