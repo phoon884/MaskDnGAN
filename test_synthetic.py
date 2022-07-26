@@ -125,7 +125,7 @@ def denoise_syn(data_dir, output_dir):
             denoised_srgb_frame = np.uint8(denoised_srgb_frame)#*255
             cv2.imwrite(os.path.join(output_dir, imagesNames[int(numOfFrames/2)].split('.')[0] + '.png'), denoised_srgb_frame)
             counter += 1
-    
+            break
     # ### Save PSNRs to file.
     # if args.raw_psnr:
     #     frame_avg_raw_psnr = frame_avg_raw_psnr/counter
