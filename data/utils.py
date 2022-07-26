@@ -12,8 +12,8 @@ import time
 
 def pack_gbrg_raw(raw):
     #pack GBRG Bayer raw to 4 channels
-    black_level = 240
-    white_level = 2**12-1
+    black_level = 0        # black_level = 240     
+    white_level = 255        # white_level = 2**12-1
     im = raw.astype(np.float32)
     im = np.maximum(im - black_level, 0) / (white_level-black_level)
 
