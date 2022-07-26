@@ -106,7 +106,7 @@ def denoise_syn(data_dir, output_dir):
             #     frame_avg_raw_psnr += test_raw_psnr
             #     frame_avg_raw_ssim += test_raw_ssim
 
-            output = output*(2**12-1-240)+240
+            output = output #*(2**12-1-240)+240
             denoised_raw_frame = preprocess(np.expand_dims(pack_gbrg_raw(output),axis=0))
             denoised_srgb_frame = postprocess(isp(denoised_raw_frame))[0]
 
