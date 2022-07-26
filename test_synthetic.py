@@ -62,7 +62,8 @@ def denoise_syn(data_dir, output_dir):
             for imageName in imagesNames:
                 # Loads the noisy image.
                 image_raw = Image.open(os.path.join(data_dir, imageName))
-                image_raw = np.array(image_raw)
+                image_raw = cv2.imread(os.path.join(data_dir, imageName))
+                # image_raw = np.array(image_raw)
                 image_raw = cv2.resize(image_raw, (960,576))
                 image_raw = image_raw.astype(np.float32)/255
                 image_raw = torch.from_numpy(image_raw)
@@ -71,6 +72,7 @@ def denoise_syn(data_dir, output_dir):
                     image_raw = torch.cat((image_raw , image_raw[1].unsqueeze(0)))
                 else:
                     image_raw = torch.cat((image_raw , image_raw[1,:,:].unsqueeze(0))).cuda()
+                print(image_raw.shape)
                 # if torch.cuda.is_available() == False:
                 #     image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).unsqueeze(0)
                 # else:
