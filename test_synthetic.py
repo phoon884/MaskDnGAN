@@ -46,8 +46,8 @@ def denoise_syn(data_dir, output_dir):
     frame_avg_srgb_psnr = 0
     frame_avg_srgb_ssim = 0
     
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
+    # if not os.path.isdir(output_dir):
+    #     os.makedirs(output_dir)
 
     # List to store previous overlapping denoised frames
     prev = [None]
@@ -65,11 +65,12 @@ def denoise_syn(data_dir, output_dir):
                 image_raw = np.array(image_raw)
                 image_raw = cv2.resize(image_raw, (960,576))
                 image_raw = image_raw.astype(np.float32)/255
+                image_raw = torch.from_numpy(image_raw)
                 # image_raw = pack_gbrg_raw(np.array(image_raw))#np.array(image_ra
                 if torch.cuda.is_available() == False:
-                    image_raw = torch.from_numpy(image_raw).permute(0, 1, 2, 1).unsqueeze(0)
+                    image_raw = torch.cat((image_raw , image_raw[1].unsqueeze(0)))
                 else:
-                    image_raw = torch.from_numpy(image_raw).permute(0, 1, 2, 1).cuda().unsqueeze(0)
+                    image_raw = torch.cat((image_raw , image_raw[1,:,:].unsqueeze(0))).cuda()
                 # if torch.cuda.is_available() == False:
                 #     image_raw = torch.from_numpy(image_raw).permute(2, 0, 1).unsqueeze(0)
                 # else:
@@ -190,8 +191,8 @@ if __name__ == '__main__':
     backWarp = dataloader.backWarp((1920, 1152), device)
     backWarp = backWarp.to(device)    
     
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
+    # if not os.path.isdir(output_dir):
+    #     os.makedirs(output_dir)
 
     # for iso in iso_list:
     #     context = 'ISO{}'.format(iso) + '\n'
